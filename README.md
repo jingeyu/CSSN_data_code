@@ -40,8 +40,8 @@ Platform: x86_64-apple-darwin17.0 (64-bit) were used in the project. And The nec
 
 
 Computer information:
-Operating system: macOS 10.15.5
-CPU: Quad-Core Intel Core i5 2.4G Hz. 
+- Operating system: macOS 10.15.5
+- CPU: Quad-Core Intel Core i5 2.4G Hz. 
 
 
 ## Instructions for Use
