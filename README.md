@@ -1,6 +1,6 @@
 # Recovering Spatially-Varying Cell-Specific Gene Co-Expression Networks for Single-Cell Spatial Expression Data.
 
-# Yu jinge 
+# Jinge Yu
 
 ## Data
 
