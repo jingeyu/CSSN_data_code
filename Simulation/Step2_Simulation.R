@@ -2,7 +2,7 @@
 ######################### Comparasion #########################
 ###############################################################
 rm(list = ls())
-# setwd("/Users/jinge.yu/Desktop/code_and_data/Simulation")
+setwd("/Users/jinge.yu/Desktop/code_and_data/Simulation")
 
 sch <- seq.Date(from = as.Date("20201205",format = "%Y%m%d"), by = "day", length.out = 10)
 sch <- as.numeric(gsub("-", "", sch))
@@ -14,11 +14,13 @@ sum.diff.ct <- rep(0, 10)
 sum.diff.sim <- rep(0, 10)
 sum.diff.csn <- rep(0, 10)
 sum.diff.csnct <- rep(0, 10)
+sum.diff.wgcna <- rep(0, 10)
 
 time.ctn <- rep(0, 10)
 time.sim <- rep(0, 10)
 time.csn <- rep(0, 10)
 time.csn.ct <- rep(0, 10)
+time.wgcna <- rep(0, 10)
 
 #---- Cell-type specific results ------
 for(s in 1:10){
@@ -108,6 +110,67 @@ for(s in 1:10){
   }
   sum.diff.ct[s] <- sum(diff_ct) / n
 }
+
+
+#------- WGCNA---------
+for(s in 1:10){
+  seed <- sch[s]
+  # load data
+  load(paste0("RData/", seed, "_Sigma.RData"))
+  load(paste0("RData/", seed, "_Sim_network.RData"))
+  Corr.true[Corr.true != 0] <- 1
+  n <- dim(Corr.true)[3]
+  
+  t1 <- proc.time()
+  # Cell number:
+  n <- ncol(X)
+  # Gene number
+  G <- nrow(X)
+  # Notice that cell types in cell.info as factor
+  cell.type <- as.vector(cell.info[, 1])
+  # Cell Type number
+  K <- length(unique(cell.type))
+  # Transform factor cell types to numeric ones.
+  ct <- names(table(cell.type))
+  for(i in 1:length(ct)){
+    cell.type <- gsub(ct[i], i, cell.type)
+  }
+  cell.type <- as.numeric(cell.type)
+  ind.cell.type <- list()
+  
+  #---- Step1 Centralization and Scaling ----
+  is.scale <- TRUE
+  for(k in 1:K){
+    tmp <- which(cell.type == k)
+    ind.cell.type[[k]] <- tmp
+  }
+  
+  TOM <- array(NA, dim = c(G,G,K))
+  for(k in 1:K){
+    softPower <- 4
+    datExpr <- t(X[,ind.cell.type[[k]]])
+    adjacency <- adjacency(datExpr, power = softPower)
+    TOM[,,k] <- TOMsimilarity(adjacency)
+  }
+  
+  wgcna.Corr <- array(NA, dim = c(G, G, n))
+  for(i in 1:n){
+    wgcna.Corr[,,i] <- TOM[,,cell.type[i]]
+  }
+  
+  wgcna.Corr[wgcna.Corr < 0.0001] <- 0
+  wgcna.Corr[wgcna.Corr != 0] <- 1
+  time.wgcna[s] <- (proc.time() - t1)[3]
+  print(time.wgcna[s])
+  save(wgcna.Corr, file = paste0("RData/WGCNA_", seed, ".RData"))
+  #------Step 2-ERRORS----
+  diff_wgcna <- NULL
+  for(i in 1:n){
+    diff_wgcna <- c(diff_wgcna, sum(abs(Corr.true[,,i][upper.tri(Corr.true[,,i])] - wgcna.Corr[,,i][upper.tri(wgcna.Corr[,,i])])))
+  }
+  sum.diff.wgcna[s] <- sum(diff_wgcna) / n
+}
+
 
 
 #-------Two-step algorithm Simulation result---------

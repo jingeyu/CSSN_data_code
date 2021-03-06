@@ -24,7 +24,7 @@ for(i in 1:n){
 }
 non.edge <- G * (G - 1) / 2 - edge.true
 
-#-----CTN---------
+#-----CTS---------
 # Notice that cell types in cell.info are factor
 cell.type <- as.vector(cell.info[, 1])
 # Cell Type number
@@ -102,7 +102,7 @@ for(s in 1:length(c.thre)){
   FP <- rep(0,n)
   TP <- rep(0,n)
   est.edge.ct[[s]] <- list()
-  diff_ct <- NULL
+  
   for(i in 1:n){
     est.edge.ct[[s]][[i]] <- which(tmp[,,i][upper.tri(tmp[,,i])] == 1)
     FP[i] <- length(intersect(est.edge.ct[[s]][[i]], true.zero[[i]]))
@@ -113,6 +113,48 @@ for(s in 1:length(c.thre)){
   total_FPR_ct[s] <- sum(FP) / sum(non.edge)
   total_TPR_ct[s] <- sum(TP) / sum(edge.true)
 }
+
+#------ WGCNA -------
+TOM <- array(NA, dim = c(G,G,K))
+for(k in 1:K){
+  softPower <- 4
+  datExpr <- t(X[,ind.cell.type[[k]]])
+  adjacency <- adjacency(datExpr, power = softPower)
+  TOM[,,k] <- TOMsimilarity(adjacency)
+}
+
+wgcna.Corr <- array(NA, dim = c(G, G, n))
+for(i in 1:n){
+  wgcna.Corr[,,i] <- TOM[,,cell.type[i]]
+}
+
+wgcna.thre <- c(1e-2, 1e-3, 1e-4, 7e-5, 3.5e-5, 1e-5, 7e-6, 3.5e-6, 1e-6, 7e-7, 3.5e-7, 1e-7, 7e-8, 3.5e-8, 1e-8, 0)
+total_FPR_wgcna <- c()
+total_TPR_wgcna <- c()
+FPR.wgcna <- list()
+TPR.wgcna <- list()
+est.edge.wgcna <- list()
+
+for(s in 1:length(wgcna.thre)){
+  tmp <- wgcna.Corr
+  tmp[abs(tmp) < wgcna.thre[s]] <- 0
+  tmp[tmp != 0] <- 1
+  FPR.wgcna[[s]] <- rep(0, n)
+  TPR.wgcna[[s]] <- rep(0, n)
+  FP <- rep(0,n)
+  TP <- rep(0,n)
+  est.edge.wgcna[[s]] <- list()
+  for(i in 1:n){
+    est.edge.wgcna[[s]][[i]] <- which(tmp[,,i][upper.tri(tmp[,,i])] == 1)
+    FP[i] <- length(intersect(est.edge.wgcna[[s]][[i]], true.zero[[i]]))
+    FPR.wgcna[[s]][i] <- FP[i] / non.edge[i]
+    TP[i] <- length(intersect(est.edge.wgcna[[s]][[i]], true.edge[[i]]))
+    TPR.wgcna[[s]][i] <- TP[i] / edge.true[i]
+  }
+  total_FPR_wgcna[s] <- sum(FP) / sum(non.edge)
+  total_TPR_wgcna[s] <- sum(TP) / sum(edge.true)
+}
+
 
 #--------Simualation----------
 cell.den <- 70
@@ -220,8 +262,7 @@ total_TPR_csnct <- c(0, total_TPR_csnct, 1)
 #----save------
 
 save(list = c("total.FPR.sim", "total.TPR.sim", "total_FPR_ct", "total_TPR_ct",
-              "total_FPR_csn", "total_TPR_csn", "total_FPR_csnct", "total_TPR_csnct"),
+              "total_FPR_csn", "total_TPR_csn", "total_FPR_csnct", "total_TPR_csnct",
+              "total_FPR_wgcna", "total_TPR_wgcna"),
      file = "RData/ROC_curve.RData")
-
-
 
