@@ -67,5 +67,4 @@ The general steps in the real application are:
  1. Conduct data preprocessing.
  2. Apply the proposed model to the preprocessed data. 
  3. Generate the Figure 5—Figure 9 in the paper.
-![Uploading image.png…]()
 
