@@ -6,17 +6,20 @@
 
 ### Abstract 
 
-We use MERFISH data for our analysis, refer to Moffitt JR, Bambah-Mukku D, Eichhorn SW, Vaughn E, Shekhar K, Perez JD, et al. Molecular, spatial, and functional single-cell profiling of the hypothalamic preoptic region. Science 362, 2018 for details.
+We use MERFISH mouse hypothalamus data and MERFISH U-2 OS cell line datasets for our analysis, refer to Moffitt JR, Bambah-Mukku D, Eichhorn SW, Vaughn E, Shekhar K, Perez JD, et al. Molecular, spatial, and functional single-cell profiling of the hypothalamic preoptic region. Science 362, 2018 and Xia C, Fan J, Emanuel G, et al. Spatial transcriptome profiling by MERFISH reveals subcellular RNA compartmentalization and cell cycle-dependent gene expression[J]. Proceedings of the National Academy of Sciences, 2019, 116(39): 19490-19499 for details.
 
 ### Availability 
 
-The data are publicly available for download via the online data portal at https://datadryad.org/stash/dataset/doi:10.5061/dryad.8t8s248. No registration is required.
+-	The MERFISH mouse hypothalamus data is publicly available for download via the online data portal at https://datadryad.org/stash/dataset/doi:10.5061/dryad.8t8s248. No registration is required!
+-	The MERFISH U-2 OS cell line datasets are publicly available for download via the online data portal at https: //www.pnas.org/content/116/39/19490/tab-figures-data. No registration is required.
+
+
 
 ## Code
 
 ### Abstract
 
-All of the data preprocessing and analysis in this paper were completed using R. The code is provided to conduct preprocessing on the raw data, apply proposed model via two-step algorithm, CTS, CSN-joint and CSN-separate, and generate descriptive plots.
+All of the data preprocessing and analysis in this paper were completed using R. The code is provided to conduct preprocessing on the raw data, apply proposed model via two-step algorithm, WGCNA, CTS, CSN-joint and CSN-separate, and generate descriptive plots.
 
 ### Description
 
@@ -37,6 +40,10 @@ Platform: x86_64-apple-darwin17.0 (64-bit) were used in the project. And The nec
 -	Matrix, version 1.2-18 (https://CRAN.R-project.org/package=Matrix)
 -	CholWishart, version 1.1.0 (https://CRAN.R-project.org/package=CholWishart)
 -	stats, version 4.0.3 (https://CRAN.R-project.org/package=stats)
+-	Seurat, version 4.0.0 (https://CRAN.R-project.org/package=Seurat)
+- WGCNA, version 1.69 
+(http://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/)
+
 
 
 Computer information:
@@ -48,15 +55,17 @@ Computer information:
 
 ### Reproducibility
 
-All data preprocessing and analysis as well as Table 1, Figure 2 and 3 in the manuscript can be reproduced.
+All data preprocessing and analysis as well as Table 1, Figure 2—Figure 9 in the manuscript can be reproduced.
 
 Detailed workflow information is contained in the "Reproducibility in the Simulation.docx" in "Simulation" and "Reproducibility in the Real Application.docx" in "Real Application" directories. 
 
 The general steps in the simulation are:
  1. Generate the data and apply the proposed model to the data.
-2. Generate Figure 2 and Table 1 in the paper.
+2. Generate Figure 2—Figure 4 and Table 1 in the manuscript.
 
 The general steps in the real application are:
  1. Conduct data preprocessing.
  2. Apply the proposed model to the preprocessed data. 
- 3. Generate the Figure 3 in the paper.
+ 3. Generate the Figure 5—Figure 9 in the paper.
+![Uploading image.png…]()
+
